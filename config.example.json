@@ -1,0 +1,55 @@
+{
+  "triage": {
+    "lark": {
+      "default_base_token": "CRchbC460aXVhLs9jDHjSrQtpIf",
+      "default_table_id": "tblYupanzbN3ejQ9",
+      "default_view_id": "vew3YGlRjp",
+      "docs_folder_token": "OyQIfsO45l3netdTvCejgWnLp9c"
+    },
+    "sla_matrix_hours": {
+      "Bug": {
+        "High": 4,
+        "Medium": 8,
+        "Low": 24
+      },
+      "Feature": {
+        "High": 16,
+        "Medium": 40,
+        "Low": 80
+      },
+      "Task": {
+        "High": 8,
+        "Medium": 24,
+        "Low": 48
+      }
+    },
+    "rules": {
+      "min_turnaround_hours": 2,
+      "notify_requester_im": true,
+      "post_base_comment": true
+    }
+  },
+  "code": {
+    "lark": {
+      "default_base_token": "CRchbC460aXVhLs9jDHjSrQtpIf",
+      "default_table_id": "tblYupanzbN3ejQ9",
+      "default_view_id": "vew3YGlRjp"
+    },
+    "workspaces": {
+      "root_directory": "C:/Users/sf/Documents/GitHub",
+      "supported_manifests": [
+        "package.json",
+        "pom.xml",
+        "composer.json",
+        "pyproject.toml",
+        "Cargo.toml",
+        "README.md"
+      ]
+    },
+    "output_preferences": {
+      "show_diff": true,
+      "generate_unit_tests": true,
+      "pr_checklist": true
+    }
+  }
+}

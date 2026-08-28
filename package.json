@@ -1,0 +1,20 @@
+{
+  "name": "lark-suite",
+  "version": "1.0.0",
+  "description": "Production-grade AI agent skills and automation suite for interacting with Lark / Feishu",
+  "main": "bin/install.js",
+  "scripts": {
+    "setup": "node bin/install.js"
+  },
+  "keywords": [
+    "lark",
+    "feishu",
+    "ticket-triage",
+    "agent-skills",
+    "developer-companion",
+    "antigravity",
+    "claude-code"
+  ],
+  "author": "NTT",
+  "license": "MIT"
+}
