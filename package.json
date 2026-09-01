@@ -1,10 +1,13 @@
 {
   "name": "lark-suite",
   "version": "1.0.0",
-  "description": "Production-grade AI agent skills and automation suite for interacting with Lark / Feishu",
+  "description": "Production-grade AI agent skills and automation suite for interacting with Lark / Feishu & Lark Docs Kit",
   "main": "bin/install.js",
   "scripts": {
-    "setup": "node bin/install.js"
+    "setup": "node bin/install.js",
+    "sync": "node scripts/sync.js",
+    "sync:init": "node scripts/sync.js --init",
+    "export-diagrams": "node scripts/export-diagrams.js"
   },
   "keywords": [
     "lark",
@@ -13,7 +16,11 @@
     "agent-skills",
     "developer-companion",
     "antigravity",
-    "claude-code"
+    "claude-code",
+    "lark-docs",
+    "lark-cli",
+    "drawio",
+    "documentation"
   ],
   "author": "NTT",
   "license": "MIT"
