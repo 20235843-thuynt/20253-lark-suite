@@ -24,7 +24,15 @@ fs.readdirSync(srcSkillsDir).forEach(skillName => {
 
   // Xóa đích cũ nếu tồn tại
   if (fs.existsSync(dest)) {
-    fs.rmSync(dest, { recursive: true, force: true });
+    try {
+      if (process.platform === 'win32') {
+        execSync(`cmd /c rmdir "${dest}"`, { stdio: 'ignore' });
+      } else {
+        fs.rmSync(dest, { recursive: true, force: true });
+      }
+    } catch (e) {
+      try { fs.rmSync(dest, { recursive: true, force: true }); } catch {}
+    }
   }
 
   try {
