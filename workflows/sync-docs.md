@@ -4,7 +4,7 @@ inclusion: manual
 
 # Workflow: Đồng bộ tài liệu lên Lark Docs
 
-Quy trình cập nhật tài liệu local trong `docs/` và đồng bộ lên Lark Docs bằng Lark CLI (`@larksuite/cli`). Chạy các lệnh `npm run ...` / `node scripts/...` từ thư mục engine `20253-lark-suite/` (`/mnt/c/Users/sf/Documents/GitHub/20253-lark-suite/` trên Linux hoặc `C:\Users\sf\Documents\GitHub\20253-lark-suite\` trên Windows).
+Quy trình cập nhật tài liệu local trong `docs/` và đồng bộ lên Lark Docs bằng Lark CLI (`@larksuite/cli`). Chạy các lệnh `npm run ...` / `node scripts/...` từ **gốc repo**.
 
 ## Bước 1: Pre-flight Check
 
@@ -30,21 +30,14 @@ Quy trình cập nhật tài liệu local trong `docs/` và đồng bộ lên La
 ### A. Cập nhật tất cả doc đã có
 
 ```bash
-# Ubuntu Linux / WSL:
-cd /mnt/c/Users/sf/Documents/GitHub/20253-lark-suite && npm run sync
-
-# Windows (PowerShell):
-cd "C:\Users\sf\Documents\GitHub\20253-lark-suite"; npm run sync
+npm run sync
+# Hoặc: node scripts/sync.js
 ```
 
 ### B. Khởi tạo dự án mới trên Lark Drive
 
 ```bash
-# Ubuntu Linux / WSL:
-cd /mnt/c/Users/sf/Documents/GitHub/20253-lark-suite && node scripts/sync.js --init <FOLDER_TOKEN>
-
-# Windows (PowerShell):
-cd "C:\Users\sf\Documents\GitHub\20253-lark-suite"; node scripts/sync.js --init <FOLDER_TOKEN>
+node scripts/sync.js --init <FOLDER_TOKEN>
 ```
 
 _Tạo doc trên Lark Drive, tự bóc ID và lưu vào `docs/doc-mapping.json` + header markdown._
@@ -57,16 +50,12 @@ Nếu Lark CLI yêu cầu scope mới (`docx:document:create`, `space:document:m
 2. `npx lark-cli auth qrcode --url "<VERIFICATION_URL>" --output docs/diagrams/lark-qr.png`
 3. Trình verification link, user code, QR cho user.
 4. Sau khi user xác nhận: `npx lark-cli auth login --device-code <DEVICE_CODE>`
-5. Chạy `node scripts/sync.js --init <FOLDER_TOKEN>` từ thư mục engine.
+5. `node scripts/sync.js --init <FOLDER_TOKEN>`
 
 ### C. Cập nhật 1 doc
 
 ```bash
-# Ubuntu Linux / WSL:
-cd /mnt/c/Users/sf/Documents/GitHub/20253-lark-suite && node scripts/sync.js --doc 01-prd
-
-# Windows (PowerShell):
-cd "C:\Users\sf\Documents\GitHub\20253-lark-suite"; node scripts/sync.js --doc 01-prd
+node scripts/sync.js --doc 01-prd
 ```
 
 ---

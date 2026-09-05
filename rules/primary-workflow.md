@@ -36,12 +36,12 @@ Khi user yêu cầu tài liệu kỹ thuật, thiết kế kiến trúc, hoặc 
 ## 🎨 PHASE 3: Tạo sơ đồ & xuất thẩm mỹ (nếu cần sơ đồ)
 
 1. **Tạo nguồn**: sinh `docs/diagrams/<name>.drawio` bằng draw.io MCP. Áp dụng Aesthetic Design System (color-code theo tầng, bo góc `rx=10, ry=10`).
-2. **Nhúng preview & edit link** vào Markdown:
+2. **Biên dịch ảnh**: `npm run export-diagrams -- <name>` (từ gốc repo).
+3. **Nhúng preview & edit link** vào Markdown — dùng ảnh PNG + link XML nhúng `#R` (KHÔNG dùng `?url=` GitHub raw, KHÔNG cần push `.drawio`). Sinh link: `node scripts/drawio-link.js <name>`.
    ```markdown
    ![<Diagram Title>](./diagrams/<name>.png)
-   [✏️ Edit Diagram in Draw.io](https://app.diagrams.net/?url=https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio)
+   [✏️ Edit Diagram in Draw.io](https://app.diagrams.net/#R<chuỗi-đã-encode>)
    ```
-3. **Biên dịch ảnh**: `npm run export-diagrams` (từ engine `20253-lark-suite/`).
 
 ---
 

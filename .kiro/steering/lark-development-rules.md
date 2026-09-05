@@ -17,5 +17,5 @@ inclusion: manual
 ## 3. Atomic Commit & Sync
 
 - Khi cập nhật tài liệu: sửa file Markdown local trong `docs/` trước.
-- Biên dịch lại sơ đồ (`.drawio` → `.drawio.svg` & PNG Retina 2x) trước khi sync lên Lark Docs.
+- Biên dịch lại sơ đồ (`.drawio` → PNG Retina 2x) trước khi sync lên Lark Docs.
 - Luôn dùng `docs +update` cho tài liệu đã tồn tại để tránh tạo trùng trên Lark.

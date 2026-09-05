@@ -19,9 +19,9 @@ Bảng tham chiếu tương tác với Lark Docs qua Lark CLI (`@larksuite/cli`)
 > npx lark-cli skills read lark-bitable  # Hướng dẫn sâu về Spreadsheet & Base/Bitable
 > ```
 >
-> 🎨 **Diagram skill:** Xem `.kiro/skills/drawio-diagrams/SKILL.md` để vẽ sơ đồ bằng draw.io MCP và xuất SVG/PNG Retina 2x qua `drawio-cli`.
+> 🎨 **Diagram skill:** Xem `skills/drawio-diagrams/SKILL.md` để vẽ sơ đồ bằng draw.io MCP và xuất PNG Retina 2x qua binary `drawio` CLI.
 >
-> **Engine tự động hóa**: Script đồng bộ tài liệu được đóng gói sẵn trong thư mục `scripts/sync.js` của skill này, hoặc chạy qua thư mục `lark-suite/` của dự án (nếu có).
+> Engine tự động hóa (`scripts/`, `package.json`, `docs/doc-mapping.json`) nằm ở gốc repo. Chạy `npm run ...` từ **gốc repo**.
 
 ---
 
@@ -30,12 +30,12 @@ Bảng tham chiếu tương tác với Lark Docs qua Lark CLI (`@larksuite/cli`)
 Khi thực hiện thao tác Drive (tạo folder, di chuyển file, cấp quyền) cần scope OAuth mới (`docx:document:create`, `space:document:move`, `drive:drive`), `lark-cli` sẽ khởi tạo Device Flow. Agent PHẢI theo giao thức:
 
 1. **Bước 1 — Lấy Device Code & URL**:
-   Chạy `lark-cli auth login --scope "docx:document:create space:document:move drive:drive" --no-wait --json` để lấy `verification_url`, `user_code`, `device_code`.
+   Chạy `npx lark-cli auth login --scope "docx:document:create space:document:move drive:drive" --no-wait --json` để lấy `verification_url`, `user_code`, `device_code`.
 
 2. **Bước 2 — Tạo ảnh QR PNG**:
 
    ```bash
-   lark-cli auth qrcode --url "<VERIFICATION_URL>" --output docs/diagrams/lark-qr.png
+   npx lark-cli auth qrcode --url "<VERIFICATION_URL>" --output docs/diagrams/lark-qr.png
    ```
 
 3. **Bước 3 — Trình link & QR cho user**:
@@ -45,8 +45,8 @@ Khi thực hiện thao tác Drive (tạo folder, di chuyển file, cấp quyền
    - Yêu cầu user bấm **Xác nhận** và trả lời **"Xong"**.
 
 4. **Bước 4 — Hoàn tất xác thực & tiếp tục**:
-   Khi user xác nhận: `lark-cli auth login --device-code <DEVICE_CODE>`
-   Sau đó chạy `node scripts/sync.js --init <FOLDER_TOKEN>`.
+   Khi user xác nhận: `npx lark-cli auth login --device-code <DEVICE_CODE>`
+   Sau đó chạy `node scripts/sync.js --init <FOLDER_TOKEN>` (từ gốc repo).
 
 ---
 
@@ -55,24 +55,16 @@ Khi thực hiện thao tác Drive (tạo folder, di chuyển file, cấp quyền
 Agent làm việc trong repo này PHẢI ưu tiên dùng script tự động và JSON mapping:
 
 1. **Central Document Mapping**: `docs/doc-mapping.json`
-2. **Đồng bộ Lark tự động**:
+2. **Đồng bộ Lark tự động** (chạy từ gốc repo):
    ```bash
-   # Cách 1: Chạy từ lark-suite/ của repo:
-   npm --prefix lark-suite run sync                                # Đồng bộ tất cả doc đã sửa (overwrite)
-   node lark-suite/scripts/sync.js --init <FOLDER_TOKEN>          # Khởi tạo dự án mới trên Lark Drive
-   node lark-suite/scripts/sync.js --doc 01-prd                   # Đồng bộ 1 doc cụ thể
-
-   # Cách 2: Chạy trực tiếp script sync của skill:
-   node .kiro/skills/lark-docs/scripts/sync.js
-   node .kiro/skills/lark-docs/scripts/sync.js --init <FOLDER_TOKEN>
-   node .kiro/skills/lark-docs/scripts/sync.js --doc 01-prd
+   npm run sync                          # Đồng bộ tất cả doc đã sửa (overwrite)
+   node scripts/sync.js --init <FOLDER_TOKEN>  # Khởi tạo dự án mới trên Lark Drive
+   node scripts/sync.js --doc 01-prd     # Đồng bộ 1 doc cụ thể
    ```
 3. **Xuất sơ đồ tự động**:
    ```bash
-   # Từ lark-suite:
-   npm --prefix lark-suite run export-diagrams
-   # Hoặc trực tiếp:
-   node .kiro/skills/drawio-diagrams/scripts/export-diagrams.js
+   npm run export-diagrams               # Biên dịch tất cả .drawio -> PNG Retina 2x
+   npm run export-diagrams -- <name>     # Chỉ biên dịch 1 file
    ```
 
 ---
@@ -95,28 +87,22 @@ npx lark-cli docs +fetch --doc <DOC_ID> --doc-format xml
 - Lấy `<DOC_ID>` từ `docs/doc-mapping.json` (khóa như `01-prd`, `02-system-architecture` → field `doc_id`), hoặc tìm bằng `npx lark-cli docs +search --query "..."`.
 - Kết quả trả JSON `ok:true` với `data.document.content` chứa markdown; title giữ đánh số (vd `# 02. System Architecture & Design`).
 
-**2. Đọc DIAGRAM — QUA LINK, KHÔNG QUA ẢNH PNG**
+**2. Đọc DIAGRAM — QUA FILE NGUỒN `.drawio`, KHÔNG QUA ẢNH PNG**
 
-Trong nội dung doc, mỗi sơ đồ có 2 phần: ảnh PNG (link nội bộ Lark `feishu.cn/file/...`) và **link edit draw.io**:
+Trong nội dung doc, mỗi sơ đồ có 2 phần: ảnh PNG (link nội bộ Lark `feishu.cn/file/...`) và **link edit draw.io** dạng nhúng XML `#R`:
 
 ```
-[✏️ Edit Diagram in Draw.io](https://app.diagrams.net/?url=https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio)
+[✏️ Edit Diagram in Draw.io](https://app.diagrams.net/#R<chuỗi-đã-encode>)
 ```
 
 Để đọc được **ngữ nghĩa** sơ đồ (node, cạnh, nhãn quan hệ) — không phải chỉ pixel:
 
-1. **KHÔNG mở/fetch nguyên link `app.diagrams.net/?url=...`** — đó là trang editor cho người, fetch chỉ ra HTML vô nghĩa.
-2. **Tách phần URL nằm sau `?url=`** — chính là link raw `.drawio` trên GitHub.
-3. **`web_fetch` thẳng vào link raw đó** → nhận XML mxGraph → parse `<mxCell>` để đọc node/edge/nhãn/style.
+1. **KHÔNG mở/fetch nguyên link `app.diagrams.net/#R...`** — đó là trang editor cho người, fetch chỉ ra HTML vô nghĩa. Chuỗi sau `#R` là XML đã nén (deflateRaw+base64) trong chính URL, không phải đường dẫn tới file.
+2. **Shortcut chuẩn (repo này):** đọc thẳng file nguồn local `docs/diagrams/<name>.drawio` — tên file khớp với `alt` của ảnh PNG ngay phía trên link. Nhanh nhất, luôn là bản mới nhất, không cần mạng.
+3. **Khi cần giải mã chính chuỗi `#R`** (không có file local): `decodeURIComponent` → base64 decode → `inflateRaw` → `decodeURIComponent` → ra XML mxGraph. Có thể tận dụng ngược logic trong `scripts/drawio-link.js`.
 
-```
-# Ví dụ URL raw cần fetch (đã tách từ link edit):
-https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio
-```
-
-- Ảnh PNG (`feishu.cn/file/...`) chỉ là hình — muốn hiểu logic sơ đồ PHẢI đi qua `.drawio` (XML). Nếu chỉ cần "nhìn" ảnh, dùng `docs +media-download` để tải PNG.
-- **Điều kiện:** file `.drawio` phải đã được push lên đúng branch trong link (`main`); nếu chưa push → raw URL trả 404 (draw.io báo "Không tìm thấy tập tin").
-- **Shortcut khi làm việc ngay trong repo này:** đọc thẳng file local `docs/diagrams/<name>.drawio` (nhanh hơn, không cần mạng). Chỉ dùng đường raw GitHub khi đọc từ xa (không có repo local).
+- Ảnh PNG (`feishu.cn/file/...`) chỉ là hình — muốn hiểu logic sơ đồ PHẢI đi qua XML `.drawio`. Nếu chỉ cần "nhìn" ảnh, dùng `docs +media-download` để tải PNG.
+- Link `#R` **tự chứa** nội dung nên không phụ thuộc GitHub/branch (khác `?url=` cũ cần file trên remote). Đổi lại, sửa trên draw.io Web không lưu ngược về `.drawio` — nguồn chân lý vẫn là file `docs/diagrams/<name>.drawio` trong repo.
 
 **3. Đọc ảnh/tài nguyên khác**
 
@@ -221,4 +207,4 @@ npx lark-cli skills read lark-drive
 npx lark-cli skills read lark-bitable
 ```
 
-- **Draw.io Diagram Skill:** `.kiro/skills/drawio-diagrams/SKILL.md`
+- **Draw.io Diagram Skill:** `skills/drawio-diagrams/SKILL.md`

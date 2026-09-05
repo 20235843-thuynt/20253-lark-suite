@@ -4,7 +4,7 @@ inclusion: manual
 
 # Workflow: Đồng bộ tài liệu lên Lark Docs
 
-Quy trình cập nhật tài liệu local trong `docs/` và đồng bộ lên Lark Docs bằng Lark CLI (`@larksuite/cli`). Chạy các lệnh `npm run ...` / `node scripts/...` từ trong thư mục `lark-suite/`.
+Quy trình cập nhật tài liệu local trong `docs/` và đồng bộ lên Lark Docs bằng Lark CLI (`@larksuite/cli`). Chạy các lệnh `npm run ...` / `node scripts/...` từ **gốc repo**.
 
 ## Bước 1: Pre-flight Check
 

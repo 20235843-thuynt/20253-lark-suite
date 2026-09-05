@@ -20,7 +20,6 @@ docs/
 ├── 08-project-roadmap.md
 └── diagrams/
     ├── <name>.drawio
-    ├── <name>.drawio.svg
     └── <name>.png
 ```
 
@@ -60,24 +59,29 @@ Status: Draft | In Review | Approved
 
 ### RULE 3.2: Auto Export & Sync ngay lập tức
 
-Ngay sau khi tạo/sửa `.drawio` (chạy từ `lark-suite/`):
+Ngay sau khi tạo/sửa `.drawio` (chạy từ gốc repo):
 
-1. Biên dịch SVG & PNG Retina 2x: `npm run export-diagrams`
+1. Biên dịch PNG Retina 2x: `npm run export-diagrams`
 2. Đồng bộ & nhúng ảnh in-place: `npm run sync`
 
 ### RULE 3.3: CLI Export Engine
 
+Dùng binary `drawio` trên PATH (KHÔNG dùng npm `drawio-cli` → 404). BẮT BUỘC `--border` để có lề:
+
 ```bash
-npx -y drawio-cli -x -f svg -o docs/diagrams/<name>.drawio.svg docs/diagrams/<name>.drawio
-npx -y drawio-cli -x -f png --scale 2 -o docs/diagrams/<name>.png docs/diagrams/<name>.drawio
+drawio --export --format png --scale 2 --border 24 -o docs/diagrams/<name>.png docs/diagrams/<name>.drawio
 ```
 
-### RULE 3.4: Nhúng sơ đồ & Edit Link
+### RULE 3.4: Nhúng sơ đồ (PNG + link XML `#R`)
+
+Mô hình chuẩn: ảnh PNG để xem + link XML nhúng `#R` để chỉnh sửa. KHÔNG dùng `?url=` GitHub raw và KHÔNG cần push `.drawio` (link `#R` tự chứa nội dung sơ đồ). Sinh link bằng `node scripts/drawio-link.js <name>` (từ gốc repo).
 
 ```markdown
 ![<Diagram Name>](./diagrams/<name>.png)
-[✏️ Edit Diagram in Draw.io](https://app.diagrams.net/?url=https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio)
+[✏️ Edit Diagram in Draw.io](https://app.diagrams.net/#R<chuỗi-đã-encode>)
 ```
+
+> `#R` tự chứa sơ đồ nên không phụ thuộc git; đổi lại sửa trên draw.io Web không lưu ngược về `.drawio` — cập nhật thì sửa file rồi sinh lại link.
 
 ---
 

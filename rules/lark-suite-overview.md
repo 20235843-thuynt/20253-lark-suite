@@ -8,14 +8,14 @@ Bộ AI Agent Skills để tương tác hai chiều với Lark (Feishu): triage 
 
 ## Cấu trúc trong repo
 
-- **Skills** (Kiro tự load on-demand theo mô tả): `.kiro/skills/`
+- **Skills** (Kiro tự load on-demand theo mô tả): `skills/`
   - `lark-ticket-triage/` — Triage ticket từ Lark Base, chuẩn hóa fields, tính SLA, gửi IM.
   - `ticket-to-code/` — Bóc tách PRD, soi code local, tạo technical dossier (chỉ điều tra, không sửa code).
   - `lark-docs/` — Tạo/cập nhật/đồng bộ tài liệu Lark Docs qua Lark CLI.
-  - `drawio-diagrams/` — Vẽ & xuất sơ đồ draw.io (SVG / PNG Retina 2x).
+  - `drawio-diagrams/` — Vẽ & xuất sơ đồ draw.io (PNG Retina 2x).
   - `aesthetic/` — Chuẩn thiết kế sơ đồ & UI/UX thẩm mỹ.
-- **Steering** (rules & workflow): `.kiro/steering/`
-- **Engine tự động hóa** (scripts, `package.json`, `config.example.json`): thư mục `lark-suite/` ở gốc repo. Chạy `npm run ...` từ trong `lark-suite/`; các script tự trỏ tới `docs/` ở gốc repo.
+- **Rules & Workflow**: `rules/` và `workflows/` (bản đồng bộ trong `.kiro/steering/`).
+- **Engine tự động hóa** (`scripts/`, `package.json`): ở gốc repo. Chạy `npm run ...` từ **gốc repo**; các script tự trỏ tới `docs/`.
 - **Tài liệu & sơ đồ**: `docs/` ở gốc repo (`docs/*.md`, `docs/diagrams/`, `docs/doc-mapping.json`).
 
 ## Kiến trúc tài liệu & sơ đồ
@@ -31,7 +31,7 @@ Tài liệu kỹ thuật duy trì ở `docs/` (gốc repo):
 - `07-testing-deployment.md` — Testing & Deployment
 - `08-project-roadmap.md` — Project Roadmap & Management
 - `doc-mapping.json` — Ánh xạ Lark Document ID trung tâm
-- `diagrams/` — Nguồn `.drawio`, `.drawio.svg`, `.png` (Retina 2x) tạo qua `drawio` MCP + `drawio-cli`.
+- `diagrams/` — Nguồn `.drawio` và `.png` (Retina 2x) tạo qua `drawio` MCP + binary `drawio` CLI.
 
 ## Công cụ trong Kiro (ánh xạ từ bản Antigravity gốc)
 
