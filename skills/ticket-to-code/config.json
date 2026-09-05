@@ -6,14 +6,7 @@
   },
   "workspaces": {
     "root_directory": "C:/Users/sf/Documents/GitHub",
-    "supported_manifests": [
-      "package.json",
-      "pom.xml",
-      "composer.json",
-      "pyproject.toml",
-      "Cargo.toml",
-      "README.md"
-    ]
+    "supported_manifests": ["package.json", "pom.xml", "composer.json", "pyproject.toml", "Cargo.toml", "README.md"]
   },
   "output_preferences": {
     "show_diff": true,

@@ -60,7 +60,7 @@ Status: Draft | In Review | Approved
 
 ### RULE 3.2: Auto Export & Sync ngay lập tức
 
-Ngay sau khi tạo/sửa `.drawio` (chạy từ engine `20253-lark-suite/`):
+Ngay sau khi tạo/sửa `.drawio` (chạy từ `lark-suite/`):
 
 1. Biên dịch SVG & PNG Retina 2x: `npm run export-diagrams`
 2. Đồng bộ & nhúng ảnh in-place: `npm run sync`

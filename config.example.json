@@ -1,4 +1,16 @@
 {
+  "_comment_guide": {
+    "huong_dan_lay_id": {
+      "default_base_token": "Mở bảng Lark Base trên trình duyệt, URL có dạng: https://<domain>.larksuite.com/base/<BASE_TOKEN>?table=... -> Copy chuỗi ký tự sau /base/",
+      "default_table_id": "Trong URL bảng Lark Base, lấy giá trị của tham số ?table=tbl... (bắt đầu bằng tbl)",
+      "default_view_id": "Trong URL bảng Lark Base, lấy giá trị của tham số &view=vew... (bắt đầu bằng vew)",
+      "docs_folder_token": "Mở thư mục trên Lark Drive, URL có dạng: https://<domain>.larksuite.com/drive/folder/<FOLDER_TOKEN> -> Copy chuỗi ký tự sau /folder/",
+      "wiki_space_id": "Mở không gian Wiki trên Lark, URL có dạng: https://<domain>.larksuite.com/wiki/settings/<SPACE_ID> hoặc tham số ?space_id=... (chuỗi số)",
+      "use_case_docs_folder_token": "Token thư mục chứa tài liệu Use-Case / PRD trên Lark Drive (tương tự docs_folder_token)",
+      "app_id_va_app_secret": "Truy cập Lark Developer Console (https://open.larksuite.com/app) -> Chọn Custom App của bạn -> Credentials & Basic Info -> Copy App ID (cli_...) và App Secret",
+      "requester_open_id": "ID người dùng Lark (dạng ou_...). Tự động trích xuất từ cột hệ thống Created By trên Lark Base, hoặc tra cứu tại Developer Console -> Member Management"
+    }
+  },
   "triage": {
     "lark": {
       "default_base_token": "CRchbC460aXVhLs9jDHjSrQtpIf",
@@ -33,10 +45,13 @@
     "lark": {
       "default_base_token": "CRchbC460aXVhLs9jDHjSrQtpIf",
       "default_table_id": "tblYupanzbN3ejQ9",
-      "default_view_id": "vew3YGlRjp"
+      "default_view_id": "vew3YGlRjp",
+      "wiki_space_id": "7123456789012345678",
+      "use_case_docs_folder_token": "OyQIfsO45l3netdTvCejgWnLp9c"
     },
     "workspaces": {
       "root_directory": "C:/Users/sf/Documents/GitHub",
+      "root_directory_linux": "/mnt/c/Users/sf/Documents/GitHub",
       "supported_manifests": [
         "package.json",
         "pom.xml",

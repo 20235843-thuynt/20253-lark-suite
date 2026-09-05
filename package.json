@@ -2,12 +2,11 @@
   "name": "lark-suite",
   "version": "1.0.0",
   "description": "Production-grade AI agent skills and automation suite for interacting with Lark / Feishu & Lark Docs Kit",
-  "main": "bin/install.js",
   "scripts": {
-    "setup": "node bin/install.js",
     "sync": "node scripts/sync.js",
     "sync:init": "node scripts/sync.js --init",
-    "export-diagrams": "node scripts/export-diagrams.js"
+    "export-diagrams": "node scripts/export-diagrams.js",
+    "inline-link": "node scripts/drawio-inline-link.js"
   },
   "keywords": [
     "lark",

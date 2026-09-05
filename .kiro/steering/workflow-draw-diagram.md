@@ -4,7 +4,7 @@ inclusion: manual
 
 # Workflow: Tạo, xuất & đồng bộ sơ đồ Draw.io
 
-Quy trình tạo, chuyển đổi, và nhúng sơ đồ thẩm mỹ vào tài liệu dự án bằng draw.io MCP và Lark CLI, theo **5 bước liên hoàn**. Chạy lệnh `npm run ...` từ thư mục engine `20253-lark-suite/` (`/mnt/c/Users/sf/Documents/GitHub/20253-lark-suite/` trên Linux hoặc `C:\Users\sf\Documents\GitHub\20253-lark-suite\` trên Windows). Chi tiết đầy đủ: skill `drawio-diagrams` và `aesthetic/references/diagram-theme.md`.
+Quy trình tạo, chuyển đổi, và nhúng sơ đồ thẩm mỹ vào tài liệu dự án bằng draw.io MCP và Lark CLI, theo **5 bước liên hoàn**. Chạy lệnh `npm run ...` từ trong `lark-suite/`. Chi tiết đầy đủ: skill `drawio-diagrams` và `aesthetic/references/diagram-theme.md`.
 
 ## Bước 1: Phân tích & Bóc tách Dữ liệu (Ingestion & Data Extraction)
 
@@ -35,11 +35,8 @@ Quy trình tạo, chuyển đổi, và nhúng sơ đồ thẩm mỹ vào tài li
 ## Bước 4: Headless Export SVG & PNG Retina 2x
 
 ```bash
-# Ubuntu Linux / WSL:
-cd /mnt/c/Users/sf/Documents/GitHub/20253-lark-suite && npm run export-diagrams
-
-# Windows (PowerShell):
-cd "C:\Users\sf\Documents\GitHub\20253-lark-suite"; npm run export-diagrams
+npm run export-diagrams
+# Hoặc: node scripts/export-diagrams.js
 
 # Xuất từng file qua binary drawio (KHÔNG dùng npm 'drawio-cli' → 404). BẮT BUỘC --border để có lề:
 drawio --export --format svg --border 24 -o docs/diagrams/<name>.drawio.svg docs/diagrams/<name>.drawio
@@ -54,7 +51,7 @@ drawio --export --format png --scale 2 --border 24 -o docs/diagrams/<name>.png d
    [✏️ Edit Diagram in Draw.io](https://app.diagrams.net/?url=https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio)
    ```
 2. **PUSH file `.drawio` lên GitHub `main`**: edit link fetch từ `raw.githubusercontent.com/.../main/...`; nếu chưa push → draw.io báo "Không tìm thấy tập tin" (404). `git add docs/diagrams/ && git commit -m "docs(diagrams): ..." && git push origin main`, rồi `curl` kiểm tra URL trả 200. (Repo có Husky+commitlint: nếu commit fail vì thiếu package, `npm install` ở gốc repo.)
-3. **AUTO SYNC ngay**: chạy `npm run sync` từ engine `20253-lark-suite` (`/mnt/c/Users/sf/Documents/GitHub/20253-lark-suite/` trên Linux hoặc `C:\Users\sf\Documents\GitHub\20253-lark-suite\` trên Windows). Thứ tự bắt buộc: overwrite Markdown TRƯỚC → set title SAU (nếu set title trước, H1 không-số của markdown sẽ ghi đè làm mất số thứ tự "01."/"02." trên title doc).
+3. **AUTO SYNC ngay**: `npm run sync`. Thứ tự bắt buộc: overwrite Markdown TRƯỚC → set title SAU (nếu set title trước, H1 không-số của markdown sẽ ghi đè làm mất số thứ tự "01."/"02." trên title doc).
 
 ---
 

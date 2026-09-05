@@ -1,141 +1,149 @@
 ---
 name: ticket-to-code
 version: 1.6.2
-description: "Technical investigation companion for developers. Use whenever the user asks to phân tích ticket, điều tra ticket, investigate ticket, tìm nguyên nhân lỗi, soi code, xem file nào lỗi, hướng dẫn sửa ticket, chia task, or understand codebase impact. Ingests ticket, actively searches Lark Docs/Wiki (with a shared-space fallback when personal-doc search is blocked by permissions) and discovers related repos, reads PRDs/use-case docs, traces codebase, and outputs a technical dossier plus a proposed task breakdown, without mutating code."
+description: 'Technical investigation companion cho developer. Dùng khi user yêu cầu phân tích ticket, điều tra ticket, investigate ticket, tìm nguyên nhân lỗi, soi code, xem file nào lỗi, hướng dẫn sửa ticket, chia task, hoặc hiểu tác động lên codebase. Nạp ticket, chủ động tìm Lark Docs/Wiki (có fallback shared-space khi search personal-doc bị chặn quyền) và phát hiện repo liên quan, đọc PRD/use-case, trace codebase, xuất technical dossier + đề xuất chia task — KHÔNG chỉnh sửa code.'
 metadata:
   requires:
-    bins: ["lark-cli"]
+    bins: ['lark-cli']
 ---
 
 # Ticket Investigation & Developer Companion Workflow
 
-Interactive technical investigation workflow for software engineers. Acts as a deep-dive research and advisory companion that bridges Lark Base tickets, product/use-case documentation, and one or more local or remote repositories to prepare an actionable technical dossier — plus a proposed task breakdown — for the developer. Output is always displayed directly in the chat session; nothing is written back to code, Base, or Docs by this skill.
+Quy trình điều tra kỹ thuật tương tác cho kỹ sư phần mềm. Là companion nghiên cứu sâu, cầu nối giữa ticket trên Lark Base, tài liệu product/use-case, và một hoặc nhiều repo local/remote để chuẩn bị technical dossier + đề xuất chia task. Output luôn hiển thị trực tiếp trong chat; skill này KHÔNG ghi ngược vào code, Base, hay Docs.
+
+> **Config**: đọc `config.json` cạnh file này (`.kiro/skills/ticket-to-code/config.json`) để lấy `default_base_token`, `default_table_id`, `workspaces.root_directory`.
+>
+> **Ánh xạ công cụ trong Kiro**: các tool điều tra tương đương — `view_file` → read_file / read_code; `grep_search` → grep_search; `find_by_name` → file_search; tìm repo remote → GitHub CLI (`gh`) hoặc GitHub MCP nếu có; đọc/tìm Lark → server `lark` MCP hoặc `lark-cli`.
 
 ---
 
-## 🧹 MANDATORY ZERO-LITTERING PROTOCOL (TUYỆT ĐỐI KHÔNG ĐỂ LẠI FILE RÁC)
+## 🧹 GIAO THỨC ZERO-LITTERING (TUYỆT ĐỐI KHÔNG ĐỂ LẠI FILE RÁC)
 
-- **Read-Only Investigation:** This skill is strictly investigative.
-- **No Transient Dumps:** Never leave temporary search scripts, raw JSON dumps, or scratch files inside the target codebase or user workspace.
-- **In-Memory Synthesis:** All analysis, dossier generation, and diff comparisons must be synthesized in memory and output directly into the active chat session.
-
----
-
-## 🎯 SCOPE & BOUNDARY CONSTRAINTS
-
-- **ADVISORY ONLY:** This skill performs investigation, use-case/repo mapping, requirement summarization, and task-breakdown proposals. It **MUST NOT** mutate source code files, write edits, create tickets/subtasks in Lark Base, or commit changes unless the developer explicitly asks to proceed with implementation in a subsequent prompt.
-- **AUDIENCE:** Software Engineer / Developer currently prompting in the CLI.
-- **LANGUAGE DIRECTIVE:** Match the response language to the user prompt. If the developer prompts in Vietnamese, provide the dossier, analysis, and task breakdown in Vietnamese (while keeping code symbols, file paths, and syntax in English).
+- **Chỉ điều tra (Read-Only):** Skill này thuần túy điều tra.
+- **Không dump tạm:** Không để lại script tìm kiếm tạm, dump JSON thô, hay file scratch trong codebase/workspace.
+- **Tổng hợp trong bộ nhớ:** Mọi phân tích, dossier, so sánh diff phải tổng hợp trong bộ nhớ và xuất trực tiếp ra chat.
 
 ---
 
-## 👥 Role-Agnostic Stakeholder Contract
+## 🎯 RÀNG BUỘC PHẠM VI
 
-Do NOT assume fixed enterprise roles like "BA", "QA", "PM". Use universal role-agnostic terminology:
-- **`Requester`**: The person who reported the ticket.
-- **`Assignee` / `Developer`**: The engineer currently investigating or resolving the ticket.
-- **`PA` reference material**: Any repo/doc link supplied by the requester or product/analysis side (e.g. a "use-case" repo or design doc) is treated as an **input to verify**, not as ground truth to repeat uncritically — always cross-check it against what the target codebase actually does.
-
----
-
-## ⛔ NO-ASSUMPTION RULE (hard requirement)
-
-You MUST NOT describe, summarize, or reference the content of any attached repository, attached document, or "related" repo/doc unless you **actually opened it** with a tool in this run (`view_file`, `grep_search`, `find_by_name`, a doc-read call, a Lark Docs/Wiki search+read call, or a GitHub MCP call). Noticing that a link or attachment *exists* is not the same as reading it. Likewise, **the absence of a link inside the ticket description is not proof that no relevant document exists** — you must actively search before concluding "no PRD/spec found" (see the Doc Discovery rule below). If something could not be opened or found, say so explicitly in the dossier — and if the reason is a permissions/authentication block rather than genuine non-existence, say that too, plus what would fix it (see the Doc Discovery Fallback rule).
+- **CHỈ TƯ VẤN:** Skill này điều tra, map use-case/repo, tóm tắt yêu cầu, và đề xuất chia task. TUYỆT ĐỐI KHÔNG sửa file mã nguồn, ghi edit, tạo ticket/subtask trên Lark Base, hay commit — trừ khi developer yêu cầu triển khai ở prompt sau.
+- **ĐỐI TƯỢNG:** Kỹ sư phần mềm / Developer đang prompt.
+- **NGÔN NGỮ:** Khớp ngôn ngữ với prompt. Nếu developer prompt tiếng Việt, xuất dossier/phân tích/chia task bằng tiếng Việt (giữ code symbol, file path, cú pháp bằng tiếng Anh).
 
 ---
 
-## 🔎 Repo & Use-Case Discovery Protocol
+## 👥 Hợp đồng Stakeholder không phụ thuộc vai trò
 
-This step runs before any code tracing and answers three questions: **which repos are involved, which use-case(s) do they map to, and is the PA-supplied reference (if any) actually reflected in the code?**
+KHÔNG giả định vai trò cố định như "BA", "QA", "PM". Dùng thuật ngữ tổng quát:
 
-### 1. Collect every reference on the ticket
-- **Description text:** explicit repo/PR URLs, use-case doc links (Lark Doc/Wiki, Figma, Confluence-style links).
-- **Record attachments:** files uploaded directly onto the Bitable record (a Lark Base "Attachment" field) — download and read these; do not guess content from a filename, and do not assume relevance just because a file exists (verify by reading it — an attachment can be mistakenly uploaded and unrelated, e.g. an unrelated SOP file).
-- **Implied context:** service/module names mentioned in `Affected Service` or `Labels` even without an explicit link.
-
-### 2. Active Lark Docs/Wiki search (MANDATORY — do not skip because the ticket has no explicit doc link)
-A ticket having no doc link in its description does **not** mean no relevant use-case/spec doc exists — PA teams often keep use-case docs in a personal library or a shared Wiki/Drive space without linking every ticket back to them. Therefore:
-
-1. Build a keyword set from the ticket: title, `Affected Service`, `Labels`, and 2–3 key nouns from the description (e.g. for #00262: "VietQR", "hóa đơn", "đối soát", "Napas").
-2. **Primary attempt — keyword search:** run `lark-cli drive +search` (or the equivalent search subcommand — check `lark-cli drive --help` / `lark-cli wiki --help` if unsure) with those keywords.
-3. **If the primary attempt fails with a permission/authorization error** (e.g. `need_user_authorization`) — this is expected when the app only has a bot/tenant token, since Lark's personal-space search generally requires a user-level token — do **NOT** stop here and do **NOT** report "no doc found". Instead, attempt the fallback below.
-4. **Fallback — shared space/folder listing:** if `config.json` defines a `wiki_space_id` and/or `use_case_docs_folder_token` for use-case documentation, list its contents directly with `lark-cli wiki +list-nodes --space-id <id>` and/or `lark-cli drive +list --folder-token <token>` (exact subcommand names may vary — verify with `--help`). Listing a specific space/folder that the bot app has been added to as a member typically works with a tenant/bot token alone, unlike a free-text personal search. Open and read every doc returned that plausibly matches the ticket's keywords.
-5. **If both the keyword search and the fallback are unavailable or return nothing** (no `wiki_space_id`/`use_case_docs_folder_token` configured, or the fallback also fails), the dossier MUST NOT quietly conclude "no doc found" as if it were a content gap. State plainly that the search was **blocked by permissions/configuration**, and recommend one concrete fix for the developer, e.g.: "Thêm app bot vào Wiki space chứa tài liệu use-case (để đọc bằng tenant token, không cần OAuth), hoặc chạy `lark-cli auth login --user` một lần để cấp user token cho phiên làm việc này." Only when a search genuinely ran (keyword or fallback) and returned zero relevant matches may the dossier state "không tìm thấy tài liệu use-case/spec liên quan".
-
-### 3. Identify the target repo(s) — do not assume there is only one
-1. **Local first:** scan `workspaces.root_directory` for a repo whose name/README/module structure matches the ticket's affected service or any explicitly linked repo.
-2. **Broaden the search:** a ticket can touch more than one repo (e.g. a backend payment service + a frontend billing UI + a shared library). Use `grep_search`/`find_by_name` across all mounted repos in the workspace for the ticket's key terms (service name, field names, error strings) to surface repos you might otherwise miss.
-3. **Remote repos not mounted locally:** call the connected **GitHub MCP tool** (repo/code search) using keywords from the ticket to check whether a relevant repo exists remotely even if it isn't open in the current workspace. This is mandatory whenever a repo is referenced but not found locally — do not skip it just because nothing is currently mounted.
-4. For every repo you end up citing in the dossier, you must have actually opened at least one file or run at least one real search inside it in this session.
-
-### 4. Map to use-case(s)
-- Using whatever doc(s) were opened in Step 2, identify which named use-case(s) the ticket falls under (e.g. "UC-12: Cư dân thanh toán hóa đơn qua VietQR").
-- If the PA-supplied repo/doc describes a use-case that the identified codebase does not actually implement (or implements differently), flag this mismatch explicitly — do not smooth it over.
-- If, after both the keyword search and the fallback in Step 2 were genuinely attempted, no use-case doc can be found, state that plainly rather than inventing a use-case name.
+- **`Requester`**: Người báo ticket.
+- **`Assignee` / `Developer`**: Kỹ sư đang điều tra/xử lý.
+- **Tài liệu tham chiếu `PA`**: Bất kỳ link repo/doc do requester/product cung cấp được coi là **input cần xác minh**, không phải chân lý — luôn đối chiếu với những gì codebase thực sự làm.
 
 ---
 
-## 📋 DEVELOPER OUTPUT CONTRACT (6 MANDATORY SECTIONS, FIXED ORDER)
+## ⛔ QUY TẮC KHÔNG GIẢ ĐỊNH (bắt buộc cứng)
 
-Every investigation report MUST be structured with exactly the following 6 sections, in this order, output directly in the chat — do not add extra ad-hoc sections or rename these:
-
-### 1️⃣ Section 1: Ticket Dossier (Full Ticket Citation)
-- **Ticket ID & Title:** Exact ID and title.
-- **Requester & Timestamps:** Author name, Created At, and current Target SLA (`TTR Due At`).
-- **Full Description & Facts:** Complete problem/requirement statement and any reported reproduction steps.
-- **Metadata Snapshot:** Current Type, Priority, Complexity, and Risk.
-
-### 2️⃣ Section 2: Related Repos & Use Cases
-- List every repo actually opened this session (local or via GitHub MCP), with one line on what each contains and why it's relevant.
-- List the mapped use-case(s), citing the doc/spec source found via the keyword search or the shared-space fallback — not only docs that happened to be linked directly on the ticket.
-- Note explicitly, as three distinct outcomes, which repos/docs/attachments were: (a) found and relevant, (b) found and checked but irrelevant (e.g. a misattached SOP file), or (c) **not found because the search was blocked by permissions** — this third case is different from "does not exist" and must say so, plus the concrete fix (see Step 2.5 above).
-- If a PA-supplied repo/doc's described use-case does not match what the codebase actually implements, call this out here.
-
-### 3️⃣ Section 3: Documentation & Spec Findings
-- Log key business requirements, acceptance criteria, and architectural constraints actually read from the use-case/spec doc(s) surfaced in Section 2 (whether linked directly on the ticket, found via keyword search, or found via the shared-space fallback) and any attachments.
-- If no relevant document could be opened, state clearly whether that's because a genuine search found nothing, or because the search itself was blocked by permissions — and if blocked, repeat the concrete fix from Section 2 here so the developer sees it in context.
-
-### 4️⃣ Section 4: Codebase Investigation Log (Code Findings)
-- For each related repo from Section 2, log the relevant file paths (clickable links `file:///...`), function/module signatures, and current implementation logic actually found via `grep_search` / `find_by_name` / `view_file` or GitHub MCP.
-- Trace the request/data flow relevant to the ticket across repos when more than one is involved (e.g. frontend → API → payment service).
-
-### 5️⃣ Section 5: Core Requirement Summary (Gap Analysis)
-- In plain, concise language, summarize **what actually needs to be done** — the essential requirement distilled from Sections 3 and 4, not a restatement of the whole ticket.
-- Contrast **Expected/Requested Behavior** (from the use-case doc/spec) vs. **Current Behavior** (from the codebase): what exists today, what's missing, and — for bug tickets — why the defect occurs.
-- If Section 3 was blocked by permissions rather than a genuine absence of docs, flag that this gap analysis is based only on the ticket description plus public/standard conventions, and may need revisiting once the doc becomes accessible.
-- Keep this section short enough that a developer can read it in under a minute and know exactly what problem they're solving.
-
-### 6️⃣ Section 6: Proposed Task Breakdown & Estimation Guidance
-- Split the ticket into **smaller, sequential or parallel subtasks** — do not leave it as one large undifferentiated block of work.
-- For **each subtask**, provide:
-  - **Tên task nhỏ:** a short, concrete title.
-  - **Nội dung cần làm:** what specifically has to be implemented/changed, referencing the exact files/modules from Section 4 where applicable.
-  - **Ước lượng độ phức tạp:** `Nhỏ` / `Trung bình` / `Lớn` (or a rough hour/day range if the ticket's history in this repo makes that estimable) — this is a sizing aid for the developer to do their own estimate, not a binding commitment.
-  - **Phụ thuộc (nếu có):** which other subtask(s) must be done first.
-- Order the subtasks logically (e.g. backend contract before frontend consumption, or investigation/config confirmation before implementation when open questions remain from Section 3).
-- If Section 3/5 surfaced open questions that block implementation (e.g. "chưa rõ ngân hàng thụ hưởng", or "doc use-case chưa đọc được do quyền truy cập"), list a subtask for resolving that first rather than estimating around an assumption.
+KHÔNG được mô tả, tóm tắt, hay tham chiếu nội dung của bất kỳ repo/tài liệu/"related" nào trừ khi đã **thực sự mở** nó bằng tool trong lần chạy này (read_file, grep_search, file_search, một lệnh đọc doc, một lệnh search+read Lark Docs/Wiki, hay một lệnh GitHub). Thấy một link/attachment tồn tại KHÔNG bằng việc đã đọc nó. Tương tự, **việc ticket không có link KHÔNG chứng minh không tồn tại tài liệu liên quan** — phải chủ động search trước khi kết luận "không có PRD/spec". Nếu không mở/tìm được, phải nói rõ trong dossier — và nếu lý do là chặn quyền/xác thực chứ không phải thực sự không tồn tại, cũng phải nói vậy kèm cách khắc phục.
 
 ---
 
-## 🔄 EXECUTION WORKFLOW
+## 🔎 Giao thức phát hiện Repo & Use-Case
 
-### Step 1: Ingest Ticket Details
-1. Read ticket details from Lark Base using `lark-cli base +record-get`.
-2. Extract all metadata, full description, and attached links.
+Bước này chạy trước khi trace code, trả lời 3 câu hỏi: **repo nào liên quan, map vào use-case nào, và tài liệu PA (nếu có) có thực sự phản ánh trong code không?**
 
-### Step 2: Discover & Read Attachments, Docs (Active Search + Fallback), and Referenced Repos
-Follow the **🔎 Repo & Use-Case Discovery Protocol** above — this step is not satisfied by only parsing links present in the description:
-1. Collect references from description text, record attachments, and implied context.
-2. Download and read every attachment found.
-3. **Run the active Lark Docs/Wiki keyword search.** If it fails due to a permissions/authorization error, **run the shared-space/folder fallback** (`wiki_space_id` / `use_case_docs_folder_token` from `config.json`) before giving up. Open and read every plausible match from whichever attempt succeeds.
-4. Identify all related repos — local scan first, then GitHub MCP for anything not mounted locally.
-5. Per the **NO-ASSUMPTION RULE**: only cite a repo/doc/use-case once it has actually been opened; only conclude "not found" after a genuine search returned nothing; if blocked by permissions instead, report that distinctly along with the concrete fix.
+### 1. Thu thập mọi tham chiếu trên ticket
 
-### Step 3: Multi-Repo Codebase Inspection
-1. For each repo identified in Step 2, search and trace source files using `grep_search`, `find_by_name`, and `view_file` (or the equivalent GitHub MCP search/read functions for repos not mounted locally).
-2. Note where the current implementation diverges from, or does not yet cover, what the use-case doc describes.
+- **Text mô tả:** URL repo/PR, link doc use-case (Lark Doc/Wiki, Figma, Confluence).
+- **Attachment record:** file upload trực tiếp lên record Bitable — tải và đọc, đừng đoán từ tên file, đừng cho là liên quan chỉ vì file tồn tại (xác minh bằng cách đọc).
+- **Ngữ cảnh ngầm:** tên service/module nhắc trong `Affected Service` hoặc `Labels` dù không có link.
 
-### Step 4: Synthesize Dossier & Task Breakdown
-1. Synthesize findings into the 6-Section Developer Output Contract above.
-2. Propose the subtask breakdown with sizing/dependency notes per Section 6.
-3. Output the complete dossier directly in the chat session — do not write it to a file, Base record, or Doc.
+### 2. Chủ động search Lark Docs/Wiki (BẮT BUỘC — đừng bỏ qua vì ticket không có link)
+
+1. Xây bộ keyword từ ticket: title, `Affected Service`, `Labels`, 2–3 danh từ khóa từ mô tả.
+2. **Thử chính — keyword search:** chạy `lark-cli drive +search` (hoặc subcommand tương đương — xem `lark-cli drive --help` / `lark-cli wiki --help`).
+3. **Nếu thử chính lỗi quyền/authorization** (vd `need_user_authorization`) — điều này bình thường khi app chỉ có bot/tenant token, vì search personal-space thường cần user token — thì KHÔNG dừng và KHÔNG báo "không tìm thấy". Chuyển sang fallback.
+4. **Fallback — liệt kê shared space/folder:** nếu `config.json` có `wiki_space_id` và/hoặc `use_case_docs_folder_token`, liệt kê trực tiếp bằng `lark-cli wiki +list-nodes --space-id <id>` và/hoặc `lark-cli drive +list --folder-token <token>`. Mở và đọc mọi doc phù hợp keyword.
+5. **Nếu cả hai đều không có/không trả về gì**, dossier KHÔNG được lặng lẽ kết luận "không có doc". Nói rõ search bị **chặn bởi quyền/cấu hình**, đề xuất một fix cụ thể (vd: "Thêm app bot vào Wiki space chứa tài liệu use-case, hoặc chạy `lark-cli auth login --user` một lần"). Chỉ khi search thực sự chạy và trả về 0 kết quả mới được ghi "không tìm thấy tài liệu use-case/spec liên quan".
+
+### 3. Xác định repo đích — đừng giả định chỉ có một
+
+1. **Local trước:** quét `workspaces.root_directory` tìm repo khớp affected service hoặc link repo.
+2. **Mở rộng:** ticket có thể chạm nhiều repo. Dùng grep_search/file_search khắp các repo cho key term (tên service, tên field, chuỗi lỗi).
+3. **Repo remote chưa mount:** dùng GitHub CLI (`gh search code/repos`) hoặc GitHub MCP với keyword từ ticket. Bắt buộc khi repo được nhắc nhưng không thấy local.
+4. Mỗi repo trích dẫn trong dossier phải đã thực sự được mở ít nhất một file hoặc chạy một search thật trong phiên này.
+
+### 4. Map vào use-case
+
+- Từ (các) doc đã mở ở Bước 2, xác định use-case(s) ticket thuộc về.
+- Nếu repo/doc PA mô tả use-case mà codebase không thực sự triển khai (hoặc khác đi), flag rõ mismatch này.
+- Nếu sau cả keyword search và fallback vẫn không thấy doc use-case, nói thẳng thay vì bịa tên use-case.
+
+---
+
+## 📋 HỢP ĐỒNG OUTPUT (6 MỤC BẮT BUỘC, THỨ TỰ CỐ ĐỊNH)
+
+Mọi báo cáo điều tra PHẢI có đúng 6 mục sau, đúng thứ tự, xuất trực tiếp ra chat — không thêm mục tùy tiện, không đổi tên:
+
+### 1️⃣ Ticket Dossier (trích dẫn đầy đủ)
+
+- **Ticket ID & Title**, **Requester & Timestamps** (author, Created At, `TTR Due At`), **Mô tả & Facts đầy đủ**, **Metadata Snapshot** (Type, Priority, Complexity, Risk).
+
+### 2️⃣ Related Repos & Use Cases
+
+- Liệt kê mọi repo đã thực sự mở (local hoặc qua GitHub), mỗi repo một dòng nêu nội dung + lý do liên quan.
+- Liệt kê use-case(s) đã map, trích nguồn doc/spec tìm qua keyword search hoặc fallback.
+- Ghi rõ 3 kết cục riêng biệt: (a) tìm thấy & liên quan, (b) tìm thấy & đã kiểm nhưng không liên quan, (c) **không thấy vì search bị chặn quyền** (khác với "không tồn tại", kèm fix cụ thể).
+- Nếu use-case của repo/doc PA không khớp code, nêu ở đây.
+
+### 3️⃣ Documentation & Spec Findings
+
+- Log yêu cầu nghiệp vụ, acceptance criteria, ràng buộc kiến trúc thực sự đọc từ doc use-case/spec ở Mục 2 và attachment.
+- Nếu không mở được doc nào, nói rõ do search thật không thấy hay do bị chặn quyền — nếu bị chặn, lặp lại fix cụ thể.
+
+### 4️⃣ Codebase Investigation Log
+
+- Với mỗi repo ở Mục 2, log file path (link `file:///...`), signature function/module, logic hiện tại thực sự tìm bằng grep_search / file_search / read_file hoặc GitHub.
+- Trace luồng request/data liên quan qua các repo khi có nhiều hơn một (vd frontend → API → payment service).
+
+### 5️⃣ Core Requirement Summary (Gap Analysis)
+
+- Tóm tắt ngắn gọn **thực sự cần làm gì** — bản chất yêu cầu chắt lọc từ Mục 3 & 4.
+- Đối chiếu **Expected/Requested** (từ doc/spec) vs **Current** (từ codebase): cái gì có, cái gì thiếu, và với bug — vì sao lỗi.
+- Nếu Mục 3 bị chặn quyền, flag rằng gap analysis chỉ dựa trên mô tả ticket + quy ước chuẩn, cần xem lại khi doc truy cập được.
+
+### 6️⃣ Proposed Task Breakdown & Estimation Guidance
+
+- Chia ticket thành subtask nhỏ (tuần tự/song song). Mỗi subtask nêu: **Tên task nhỏ**, **Nội dung cần làm** (tham chiếu file/module cụ thể từ Mục 4), **Ước lượng độ phức tạp** (`Nhỏ`/`Trung bình`/`Lớn`), **Phụ thuộc (nếu có)**.
+- Sắp xếp logic (vd backend contract trước frontend). Nếu có câu hỏi mở chặn triển khai, thêm subtask giải quyết trước.
+
+---
+
+## 🔄 QUY TRÌNH THỰC THI
+
+### Bước 1: Nạp ticket
+
+1. Đọc ticket từ Lark Base bằng `lark-cli base +record-get`.
+2. Trích mọi metadata, mô tả đầy đủ, link đính kèm.
+
+### Bước 2: Phát hiện & đọc Attachment, Docs (Active Search + Fallback), Repo
+
+Theo **Giao thức phát hiện Repo & Use-Case** ở trên — không thỏa mãn bằng việc chỉ parse link trong mô tả:
+
+1. Thu thập tham chiếu từ text, attachment, ngữ cảnh ngầm.
+2. Tải & đọc mọi attachment.
+3. Chạy keyword search Lark; nếu lỗi quyền, chạy fallback shared-space trước khi bỏ cuộc.
+4. Xác định repo liên quan — quét local trước, rồi GitHub cho phần chưa mount.
+5. Theo QUY TẮC KHÔNG GIẢ ĐỊNH: chỉ trích dẫn khi đã mở; chỉ kết luận "không thấy" sau khi search thật trả 0; nếu bị chặn quyền thì báo riêng kèm fix.
+
+### Bước 3: Soi Codebase đa repo
+
+1. Với mỗi repo, tìm/trace file bằng grep_search, file_search, read_file (hoặc GitHub cho repo chưa mount).
+2. Ghi chỗ code hiện tại lệch/chưa phủ những gì doc use-case mô tả.
+
+### Bước 4: Tổng hợp Dossier & chia task
+
+1. Tổng hợp thành 6 mục Output Contract.
+2. Đề xuất subtask kèm sizing/dependency (Mục 6).
+3. Xuất dossier trực tiếp ra chat — không ghi ra file, Base, hay Doc.

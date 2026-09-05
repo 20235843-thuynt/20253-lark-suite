@@ -1,121 +1,109 @@
 ---
 name: aesthetic
-description: Create aesthetically beautiful interfaces following proven design principles. Use when building UI/UX, analyzing designs from inspiration sites, generating design images with ai-multimodal, implementing visual hierarchy and color theory, adding micro-interactions, or creating design documentation. Includes workflows for capturing and analyzing inspiration screenshots with chrome-devtools and ai-multimodal, iterative design image generation until aesthetic standards are met, and comprehensive design system guidance covering BEAUTIFUL (aesthetic principles), RIGHT (functionality/accessibility), SATISFYING (micro-interactions), and PEAK (storytelling) stages. Integrates with chrome-devtools, ai-multimodal, media-processing, ui-styling, and web-frameworks skills.
+description: >-
+  Tạo giao diện và sơ đồ có tính thẩm mỹ cao theo các nguyên tắc thiết kế đã được kiểm chứng.
+  Dùng khi xây dựng UI/UX, phân tích thiết kế từ trang inspiration, triển khai visual hierarchy và color theory,
+  thêm micro-interactions, hoặc tạo tài liệu design system. Áp dụng khung BEAUTIFUL / RIGHT / SATISFYING / PEAK.
 ---
 
 # Aesthetic
 
-Create aesthetically beautiful interfaces by following proven design principles and systematic workflows.
+Tạo giao diện đẹp, chuẩn thẩm mỹ bằng cách tuân theo các nguyên tắc thiết kế đã kiểm chứng và quy trình có hệ thống.
 
-## When to Use This Skill
+## Khi nào dùng skill này
 
-Use when:
-- Building or designing user interfaces
-- Analyzing designs from inspiration websites (Dribbble, Mobbin, Behance)
-- Generating design images and evaluating aesthetic quality
-- Implementing visual hierarchy, typography, color theory
-- Adding micro-interactions and animations
-- Creating design documentation and style guides
-- Need guidance on accessibility and design systems
+Dùng khi:
 
-## Core Framework: Four-Stage Approach
+- Xây dựng hoặc thiết kế giao diện người dùng
+- Phân tích thiết kế từ các trang inspiration (Dribbble, Mobbin, Behance)
+- Triển khai visual hierarchy, typography, color theory
+- Thêm micro-interactions và animation
+- Tạo tài liệu thiết kế và style guide
+- Cần hướng dẫn về accessibility và design system
+- Áp dụng chuẩn thẩm mỹ cho sơ đồ draw.io (phối màu theo tầng kiến trúc, bo góc, typography rõ ràng)
 
-### 1. BEAUTIFUL: Understanding Aesthetics
-Study existing designs, identify patterns, extract principles. AI lacks aesthetic sense—standards must come from analyzing high-quality examples and aligning with market tastes.
+## Khung 4 giai đoạn
 
-**Reference**: [`references/design-principles.md`](references/design-principles.md) - Visual hierarchy, typography, color theory, white space principles.
+### 1. BEAUTIFUL: Hiểu về thẩm mỹ
 
-### 2. RIGHT: Ensuring Functionality
-Beautiful designs lacking usability are worthless. Study design systems, component architecture, accessibility requirements.
+Nghiên cứu các thiết kế sẵn có, nhận diện pattern, rút ra nguyên tắc. AI không có "gu" thẩm mỹ bẩm sinh — chuẩn mực phải đến từ việc phân tích các ví dụ chất lượng cao và bám thị hiếu thị trường.
 
-**Reference**: [`references/design-principles.md`](references/design-principles.md) - Design systems, component libraries, WCAG accessibility standards.
+**Tham khảo**: [`references/design-principles.md`](references/design-principles.md) — visual hierarchy, typography, color theory, white space.
+
+### 2. RIGHT: Đảm bảo chức năng
+
+Đẹp mà không dùng được thì vô giá trị. Nghiên cứu design system, kiến trúc component, yêu cầu accessibility.
+
+**Tham khảo**: [`references/design-principles.md`](references/design-principles.md) — design systems, component libraries, chuẩn WCAG.
 
 ### 3. SATISFYING: Micro-Interactions
-Incorporate subtle animations with appropriate timing (150-300ms), easing curves (ease-out for entry, ease-in for exit), sequential delays.
 
-**Reference**: [`references/micro-interactions.md`](references/micro-interactions.md) - Duration guidelines, easing curves, performance optimization.
+Thêm animation tinh tế với timing phù hợp (150-300ms), easing curve (ease-out cho entry, ease-in cho exit), delay tuần tự.
 
-### 4. PEAK: Storytelling Through Design
-Elevate with narrative elements—parallax effects, particle systems, thematic consistency. Use restraint: "too much of anything isn't good."
+**Tham khảo**: [`references/micro-interactions.md`](references/micro-interactions.md) — duration, easing, tối ưu hiệu năng.
 
-**Reference**: [`references/storytelling-design.md`](references/storytelling-design.md) - Narrative elements, scroll-based storytelling, interactive techniques.
+### 4. PEAK: Kể chuyện qua thiết kế
 
-## Workflows
+Nâng tầm bằng yếu tố tường thuật — parallax, particle, nhất quán chủ đề. Dùng có chừng mực: "quá nhiều thứ gì cũng không tốt".
 
-### Workflow 1: Capture & Analyze Inspiration
+**Tham khảo**: [`references/storytelling-design.md`](references/storytelling-design.md) — narrative elements, scroll storytelling.
 
-**Purpose**: Extract design guidelines from inspiration websites.
+## Quy trình
 
-**Steps**:
-1. Browse inspiration sites (Dribbble, Mobbin, Behance, Awwwards)
-2. Use **chrome-devtools** skill to capture full-screen screenshots (not full page)
-3. Use **ai-multimodal** skill to analyze screenshots and extract:
-   - Design style (Minimalism, Glassmorphism, Neo-brutalism, etc.)
-   - Layout structure & grid systems
-   - Typography system & hierarchy
-     **IMPORTANT:** Try to predict the font name (Google Fonts) and font size in the given screenshot, don't just use Inter or Poppins.
-   - Color palette with hex codes
-   - Visual hierarchy techniques
-   - Component patterns & styling
+### Workflow 1: Thu thập & phân tích inspiration
+
+1. Duyệt các trang inspiration (Dribbble, Mobbin, Behance, Awwwards).
+2. Chụp screenshot full-screen (không phải full page).
+3. Phân tích screenshot để rút ra:
+   - Phong cách (Minimalism, Glassmorphism, Neo-brutalism...)
+   - Layout & grid system
+   - Hệ typography & hierarchy (dự đoán tên font Google Fonts + cỡ chữ, đừng mặc định Inter/Poppins)
+   - Bảng màu kèm mã hex
+   - Kỹ thuật visual hierarchy
+   - Pattern component & styling
    - Micro-interactions
-   - Accessibility considerations
-   - Overall aesthetic quality rating (1-10)
-4. Document findings in project design guidelines using templates
+   - Cân nhắc accessibility
+   - Chấm điểm thẩm mỹ tổng thể (1-10)
+4. Ghi lại phát hiện vào design guideline theo template.
 
-### Workflow 2: Generate & Iterate Design Images
+### Workflow 2: Tạo & lặp lại design image
 
-**Purpose**: Create aesthetically pleasing design images through iteration.
+1. Định nghĩa prompt: style, màu, typography, đối tượng, animation.
+2. Tạo design image.
+3. Phân tích ảnh output, chấm điểm thẩm mỹ.
+4. Nếu điểm < 7/10: xác định điểm yếu (màu, typography, layout, spacing, hierarchy), tinh chỉnh prompt, tạo lại.
+5. Lặp đến khi đạt chuẩn (≥ 7/10).
+6. Ghi lại quyết định thiết kế cuối cùng theo template.
 
-**Steps**:
-1. Define design prompt with: style, colors, typography, audience, animation specs
-2. Use **ai-multimodal** skill to generate design images with Gemini API
-3. Use **ai-multimodal** skill to analyze output images and evaluate aesthetic quality
-4. If score < 7/10 or fails professional standards:
-   - Identify specific weaknesses (color, typography, layout, spacing, hierarchy)
-   - Refine prompt with improvements
-   - Regenerate with **ai-multimodal** or use **media-processing** skill to modify outputs (resize, crop, filters, composition)
-5. Repeat until aesthetic standards met (score ≥ 7/10)
-6. Document final design decisions using templates
+## Tài liệu thiết kế
 
-## Design Documentation
+### Tạo Design Guidelines
 
-### Create Design Guidelines
-Use [`assets/design-guideline-template.md`](assets/design-guideline-template.md) to document:
-- Color patterns & psychology
-- Typography system & hierarchy
-- Layout principles & spacing
-- Component styling standards
-- Accessibility considerations
-- Design highlights & rationale
+Dùng [`assets/design-guideline-template.md`](assets/design-guideline-template.md) để ghi: bảng màu & tâm lý màu, hệ typography, nguyên tắc layout & spacing, chuẩn styling component, accessibility, điểm nhấn thiết kế và lý do.
 
-Save in project `./docs/design-guideline.md`.
+Lưu tại `docs/design-guideline.md`.
 
-### Create Design Story
-Use [`assets/design-story-template.md`](assets/design-story-template.md) to document:
-- Narrative elements & themes
-- Emotional journey
-- User journey & peak moments
-- Design decision rationale
+### Tạo Design Story
 
-Save in project `./docs/design-story.md`.
+Dùng [`assets/design-story-template.md`](assets/design-story-template.md) để ghi: yếu tố tường thuật & chủ đề, hành trình cảm xúc, user journey & peak moment, lý do quyết định thiết kế.
 
-## Resources & Integration
+Lưu tại `docs/design-story.md`.
 
-### Related Skills
-- **ai-multimodal**: Analyze documents, screenshots & videos, generate design images, edit generated images, evaluate aesthetic quality using Gemini API
-- **chrome-devtools**: Capture full-screen screenshots from inspiration websites, navigate between pages, interact with elements, read console logs & network requests
-- **media-processing**: Refine generated images (FFmpeg for video, ImageMagick for images)
-- **ui-styling**: Implement designs with shadcn/ui components + Tailwind CSS utility-first styling
-- **web-frameworks**: Build with Next.js (App Router, Server Components, SSR/SSG)
+## Tài nguyên & tích hợp
 
-### Reference Documentation
-**References**: [`references/design-resources.md`](references/design-resources.md) - Inspiration platforms, design systems, AI tools, MCP integrations, development strategies.
+**Tham khảo**: [`references/design-resources.md`](references/design-resources.md) — nền tảng inspiration, design system, công cụ AI, chiến lược phát triển.
 
-## Key Principles
+### ⭐ Diagram Design System (BẮT BUỘC cho mọi sơ đồ .drawio)
 
-1. Aesthetic standards come from humans, not AI—study quality examples
-2. Iterate based on analysis—never settle for first output
-3. Balance beauty with functionality and accessibility
-4. Document decisions for consistency across development
-5. Use progressive disclosure in design—reveal complexity gradually
-6. Always evaluate aesthetic quality objectively (score ≥ 7/10)
+**Tham khảo**: [`references/diagram-theme.md`](references/diagram-theme.md) — dark theme Tailwind (Slate/Indigo/Emerald/Fuchsia), orthogonal edge, Crow's Foot ERD, grid/gutter 80–100px, chữ Slate-50 tương phản cao, và vòng lặp kiểm tra thị giác. Khi vẽ diagram, LUÔN áp bộ quy chuẩn này.
+
+> Lưu ý: Bản gốc của skill này tham chiếu tới các skill ngoài (`ai-multimodal`, `chrome-devtools`, `media-processing`, `ui-styling`, `web-frameworks`) vốn thuộc hệ Antigravity/Claude. Chúng KHÔNG có trong bộ này. Trong Kiro, hãy dùng công cụ/MCP tương đương đang sẵn có (ví dụ để chụp/tạo/phân tích ảnh) hoặc thao tác thủ công; đừng giả định các skill đó tồn tại.
+
+## Nguyên tắc chính
+
+1. Chuẩn thẩm mỹ đến từ con người, không từ AI — hãy nghiên cứu ví dụ chất lượng.
+2. Lặp lại dựa trên phân tích — đừng chấp nhận output đầu tiên.
+3. Cân bằng cái đẹp với chức năng và accessibility.
+4. Ghi lại quyết định để nhất quán xuyên suốt phát triển.
+5. Dùng progressive disclosure — hé lộ độ phức tạp dần dần.
+6. Luôn đánh giá thẩm mỹ khách quan (điểm ≥ 7/10).

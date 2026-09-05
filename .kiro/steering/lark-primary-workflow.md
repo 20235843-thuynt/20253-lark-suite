@@ -41,7 +41,7 @@ Khi user yêu cầu tài liệu kỹ thuật, thiết kế kiến trúc, hoặc 
    ![<Diagram Title>](./diagrams/<name>.png)
    [✏️ Edit Diagram in Draw.io](https://app.diagrams.net/?url=https://raw.githubusercontent.com/<org>/<repo>/main/docs/diagrams/<name>.drawio)
    ```
-3. **Biên dịch ảnh**: `npm run export-diagrams` (từ engine `20253-lark-suite/`).
+3. **Biên dịch ảnh**: `npm run export-diagrams` (từ `lark-suite/`).
 
 ---
 
