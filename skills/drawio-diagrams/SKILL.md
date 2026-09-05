@@ -84,7 +84,7 @@ Mô hình chuẩn: **ảnh PNG (xem) + link XML nhúng `#R` (chỉnh sửa)**. K
 - **Tạo link `#R`** từ file `.drawio` (từ gốc repo):
 
   ```bash
-  node scripts/drawio-link.js <name>        # in ra link https://app.diagrams.net/#R... cho docs/diagrams/<name>.drawio
+  node scripts/drawio-inline-link.js <name>   # in ra link https://app.diagrams.net/#R... cho docs/diagrams/<name>.drawio (hoặc: npm run inline-link -- <name>)
   ```
 
   Script nén XML đúng chuẩn draw.io (`deflateRaw` + base64 + `encodeURIComponent`) và tự round-trip verify. KHÔNG dán XML thô vào sau `#R` (URL sẽ hỏng → lỗi "Bad Request" từ edge server).
@@ -98,7 +98,7 @@ Mô hình chuẩn: **ảnh PNG (xem) + link XML nhúng `#R` (chỉnh sửa)**. K
 
 - **Đồng bộ Lark Docs/Wiki**: chạy `npm run sync` (từ gốc repo) để upload PNG Retina 2x và nhúng in‑place.
 
-> Vì sao dùng `#R` thay vì `?url=` GitHub raw: link `?url=` yêu cầu file `.drawio` phải được commit + push lên đúng branch remote, nếu không draw.io báo 404. Link `#R` mang theo nội dung sơ đồ trong chính URL nên bỏ được ràng buộc git. Đánh đổi: sửa trong draw.io Web sẽ **không lưu ngược** về file `.drawio` gốc — muốn cập nhật thì sửa file `.drawio` trong repo rồi chạy lại `drawio-link.js` để sinh link mới.
+> Vì sao dùng `#R` thay vì `?url=` GitHub raw: link `?url=` yêu cầu file `.drawio` phải được commit + push lên đúng branch remote, nếu không draw.io báo 404. Link `#R` mang theo nội dung sơ đồ trong chính URL nên bỏ được ràng buộc git. Đánh đổi: sửa trong draw.io Web sẽ **không lưu ngược** về file `.drawio` gốc — muốn cập nhật thì sửa file `.drawio` trong repo rồi chạy lại `node scripts/drawio-inline-link.js <name>` để sinh link mới.
   - ⚠️ **Thứ tự bắt buộc trong sync**: ghi đè nội dung Markdown (`docs +update overwrite`) **TRƯỚC**, rồi mới đặt lại tiêu đề (`drive +update-title`) **SAU**. Lark lấy H1 đầu tiên của markdown làm title khi overwrite; nếu set title trước thì H1 (thường KHÔNG có tiền tố đánh số như "01.") sẽ ghi đè và làm **mất số thứ tự** trên title doc. Đặt title sau để giữ đúng "01. …", "02. …".
 
 ### Tóm tắt luồng 5 bước

@@ -99,7 +99,7 @@ Trong nội dung doc, mỗi sơ đồ có 2 phần: ảnh PNG (link nội bộ L
 
 1. **KHÔNG mở/fetch nguyên link `app.diagrams.net/#R...`** — đó là trang editor cho người, fetch chỉ ra HTML vô nghĩa. Chuỗi sau `#R` là XML đã nén (deflateRaw+base64) trong chính URL, không phải đường dẫn tới file.
 2. **Shortcut chuẩn (repo này):** đọc thẳng file nguồn local `docs/diagrams/<name>.drawio` — tên file khớp với `alt` của ảnh PNG ngay phía trên link. Nhanh nhất, luôn là bản mới nhất, không cần mạng.
-3. **Khi cần giải mã chính chuỗi `#R`** (không có file local): `decodeURIComponent` → base64 decode → `inflateRaw` → `decodeURIComponent` → ra XML mxGraph. Có thể tận dụng ngược logic trong `scripts/drawio-link.js`.
+3. **Khi cần giải mã chính chuỗi `#R`** (không có file local): `decodeURIComponent` → base64 decode → `inflateRaw` → `decodeURIComponent` → ra XML mxGraph. Có thể tận dụng ngược logic trong `scripts/drawio-inline-link.js`.
 
 - Ảnh PNG (`feishu.cn/file/...`) chỉ là hình — muốn hiểu logic sơ đồ PHẢI đi qua XML `.drawio`. Nếu chỉ cần "nhìn" ảnh, dùng `docs +media-download` để tải PNG.
 - Link `#R` **tự chứa** nội dung nên không phụ thuộc GitHub/branch (khác `?url=` cũ cần file trên remote). Đổi lại, sửa trên draw.io Web không lưu ngược về `.drawio` — nguồn chân lý vẫn là file `docs/diagrams/<name>.drawio` trong repo.

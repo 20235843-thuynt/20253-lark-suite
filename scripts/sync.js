@@ -19,8 +19,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// docs/ nằm ở gốc repo (parent của lark-suite/). REPO_ROOT = lên 2 cấp từ scripts/.
-const REPO_ROOT = path.join(__dirname, '../..');
+// docs/ nằm ở gốc repo (parent của scripts/). REPO_ROOT = lên 1 cấp từ scripts/.
+const REPO_ROOT = path.join(__dirname, '..');
 const MAPPING_FILE = path.join(REPO_ROOT, 'docs/doc-mapping.json');
 
 if (!fs.existsSync(MAPPING_FILE)) {

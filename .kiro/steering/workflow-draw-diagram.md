@@ -47,7 +47,7 @@ drawio --export --format png --scale 2 --border 24 -o docs/diagrams/<name>.png d
 
 Mô hình chuẩn: **ảnh PNG (xem) + link XML nhúng `#R` (chỉnh sửa)**. KHÔNG dùng `?url=...raw.githubusercontent...`, KHÔNG push `.drawio` lên GitHub — link `#R` tự chứa nội dung sơ đồ nên không phụ thuộc remote/branch.
 
-1. Sinh link `#R` (từ gốc repo): `node scripts/drawio-link.js <name>`.
+1. Sinh link `#R` (từ gốc repo): `node scripts/drawio-inline-link.js <name>` (hoặc `npm run inline-link -- <name>`).
 2. Trong Markdown ở `docs/`, nhúng ảnh PNG + link `#R`:
    ```markdown
    ![<Diagram Title>](./diagrams/<name>.png)
@@ -55,7 +55,7 @@ Mô hình chuẩn: **ảnh PNG (xem) + link XML nhúng `#R` (chỉnh sửa)**. K
    ```
 3. **AUTO SYNC ngay**: `npm run sync`. Thứ tự bắt buộc: overwrite Markdown TRƯỚC → set title SAU (nếu set title trước, H1 không-số của markdown sẽ ghi đè làm mất số thứ tự "01."/"02." trên title doc).
 
-> Đánh đổi của `#R`: sửa trong draw.io Web KHÔNG lưu ngược về file `.drawio`. Muốn cập nhật: sửa `.drawio` trong repo → `npm run export-diagrams -- <name>` (làm mới PNG) → `drawio-link.js <name>` (sinh link mới) → thay link trong doc → `npm run sync`.
+> Đánh đổi của `#R`: sửa trong draw.io Web KHÔNG lưu ngược về file `.drawio`. Muốn cập nhật: sửa `.drawio` trong repo → `npm run export-diagrams -- <name>` (làm mới PNG) → `node scripts/drawio-inline-link.js <name>` (sinh link mới) → thay link trong doc → `npm run sync`.
 
 ---
 
@@ -71,6 +71,6 @@ Mô hình chuẩn: **ảnh PNG (xem) + link XML nhúng `#R` (chỉnh sửa)**. K
 - **Áp dụng Dark Mode Design System**: color-code theo tầng, edge orthogonal, chữ `#f8fafc`.
 - **Tuân thủ Grid Matrix Rule** + chạy Visual Inspection Loop trước khi báo hoàn tất.
 - **Export phải có `--border`** (mặc định 24px) để ảnh không bị crop sát mép.
-- **Nhúng dạng PNG + link XML `#R`** (`drawio-link.js`); KHÔNG dùng `?url=` GitHub raw, KHÔNG cần push `.drawio`.
+- **Nhúng dạng PNG + link XML `#R`** (`scripts/drawio-inline-link.js`); KHÔNG dùng `?url=` GitHub raw, KHÔNG cần push `.drawio`.
 - **Sync đúng thứ tự**: overwrite content trước, set title sau (giữ đánh số title).
 - **Sync ngay** (`npm run export-diagrams && npm run sync`) sau khi tạo/sửa `.drawio`.

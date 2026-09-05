@@ -8,17 +8,18 @@
  * Đây là định dạng draw.io yêu cầu cho fragment "#R" (nội dung sơ đồ nằm ngay trong URL,
  * KHÔNG cần push .drawio lên GitHub). KHÔNG dán XML thô vào sau #R (URL sẽ hỏng → Bad Request).
  *
- * Cách dùng (từ trong lark-suite/):
- *   node scripts/drawio-link.js system-context          # in link cho docs/diagrams/system-context.drawio
- *   node scripts/drawio-link.js system-context.drawio    # có/không đuôi .drawio đều được
- *   node scripts/drawio-link.js a b c                    # nhiều file, mỗi dòng "<name>\t<link>"
+ * Cách dùng (từ gốc repo):
+ *   node scripts/drawio-inline-link.js system-context          # in link cho docs/diagrams/system-context.drawio
+ *   node scripts/drawio-inline-link.js system-context.drawio    # có/không đuôi .drawio đều được
+ *   node scripts/drawio-inline-link.js a b c                    # nhiều file, mỗi dòng "<name>\t<link>"
  */
 
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 
-const DIAGRAM_DIR = path.join(__dirname, '../../docs/diagrams');
+// docs/ nằm ở gốc repo (parent của scripts/), nên đi lên 1 cấp từ scripts/.
+const DIAGRAM_DIR = path.join(__dirname, '../docs/diagrams');
 
 // Tách <mxGraphModel>...</mxGraphModel> khỏi wrapper <mxfile> nếu có.
 function extractGraphModel(xml) {
@@ -46,7 +47,7 @@ function decodeFromDrawio(fragment) {
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
-  console.error('Cách dùng: node scripts/drawio-link.js <name> [<name> ...]');
+  console.error('Cách dùng: node scripts/drawio-inline-link.js <name> [<name> ...]');
   process.exit(1);
 }
 

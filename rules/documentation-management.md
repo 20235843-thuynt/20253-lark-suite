@@ -74,7 +74,7 @@ drawio --export --format png --scale 2 --border 24 -o docs/diagrams/<name>.png d
 
 ### RULE 3.4: Nhúng sơ đồ (PNG + link XML `#R`)
 
-Mô hình chuẩn: ảnh PNG để xem + link XML nhúng `#R` để chỉnh sửa. KHÔNG dùng `?url=` GitHub raw và KHÔNG cần push `.drawio` (link `#R` tự chứa nội dung sơ đồ). Sinh link bằng `node scripts/drawio-link.js <name>` (từ gốc repo).
+Mô hình chuẩn: ảnh PNG để xem + link XML nhúng `#R` để chỉnh sửa. KHÔNG dùng `?url=` GitHub raw và KHÔNG cần push `.drawio` (link `#R` tự chứa nội dung sơ đồ). Sinh link bằng `node scripts/drawio-inline-link.js <name>` (hoặc `npm run inline-link -- <name>`, từ gốc repo).
 
 ```markdown
 ![<Diagram Name>](./diagrams/<name>.png)

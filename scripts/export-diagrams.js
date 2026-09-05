@@ -15,8 +15,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// docs/ nằm ở gốc repo (parent của lark-suite/), nên đi lên 2 cấp từ scripts/
-const DIAGRAM_DIR = path.join(__dirname, '../../docs/diagrams');
+// docs/ nằm ở gốc repo (parent của scripts/), nên đi lên 1 cấp từ scripts/
+const DIAGRAM_DIR = path.join(__dirname, '../docs/diagrams');
 
 // Binary draw.io: ưu tiên biến môi trường DRAWIO_BIN, mặc định 'drawio' (desktop CLI trên PATH,
 // vd cài qua Homebrew: `brew install --cask drawio`). KHÔNG dùng gói npm `drawio-cli` (không tồn tại).
