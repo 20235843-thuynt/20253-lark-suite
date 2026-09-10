@@ -101,12 +101,12 @@ Lark Suite được thiết kế theo kiến trúc **Universal Agent Framework**
 npm install
 ```
 
-### 2. Thiết lập Cấu hình Tham số
-Sao chép mẫu cấu hình và điền các ID đã tra cứu ở bước trên:
+### 2. Thiết lập Workspace
 ```bash
-cp config.example.json config.json
+npm run setup
 ```
-*(Nếu làm việc trên môi trường Windows PowerShell: `Copy-Item config.example.json config.json`)*
+Lệnh này kiểm tra Node >= 20 + npm (thiếu → báo lỗi kèm hướng dẫn, không tự cài đặt), cảnh báo nếu thiếu `lark-cli` / Draw.io MCP, sao chép `config.example.json` → `config.json` (không ghi đè nếu đã có), và tạo các thư mục `docs/`, `docs/diagrams/`, `.state/`. Sau đó mở `config.json` và điền các ID đã tra cứu ở bảng trên.
+*(Thủ công: `cp config.example.json config.json` — PowerShell: `Copy-Item config.example.json config.json`)*
 
 ### 3. Đăng nhập Lark CLI (Dành cho tài liệu & Drive)
 ```bash
@@ -133,6 +133,7 @@ Thêm cấu hình sau vào tệp cấu hình MCP của IDE (ví dụ `mcp_config
 
 | Câu Lệnh | Chức Năng |
 | :--- | :--- |
+| `npm run setup` | Kiểm tra dependencies (Node >= 20, npm), khởi tạo `config.json` từ mẫu và tạo các thư mục workspace. |
 | `npm run sync` | Quét và đồng bộ toàn bộ tài liệu Markdown nội bộ lên các tài liệu tương ứng trên Lark Docs mà không trùng lặp. |
 | `npm run sync:init` | Tự động tạo một thư mục mới trên Lark Drive, khởi tạo sẵn 8 tài liệu kỹ thuật chuẩn và lưu document IDs vào `docs/doc-mapping.json`. |
 | `npm run export-diagrams` | Quét toàn bộ sơ đồ `.drawio` trong thư mục tài liệu và tự động xuất ra định dạng `.drawio.svg` và `.png` (Retina 2x). |
