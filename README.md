@@ -74,10 +74,16 @@ Lark Suite được thiết kế theo kiến trúc **Universal Agent Framework**
 | `default_view_id` | `vew3YGlRjp` (bắt đầu bằng `vew`) | **ID của góc nhìn hiển thị (View)**.<br>👉 **Cách lấy**: Trong URL của Lark Base, lấy giá trị của tham số `&view=vew3YGlRjp`. |
 | `docs_folder_token` | `OyQIfsO45l3net...` | **Token thư mục Lark Drive chứa tài liệu kỹ thuật**.<br>👉 **Cách lấy**: Mở thư mục mong muốn trên Lark Drive qua trình duyệt:<br>`https://<domain>.larksuite.com/drive/folder/OyQIfsO45l3netdTvCejgWnLp9c`<br>Chuỗi nằm sau `/drive/folder/` chính là `folder_token`. |
 | `use_case_docs_folder_token` | `OyQIfsO45l3net...` | **Token thư mục chứa tài liệu Use-Case / PRD** (tương tự như `docs_folder_token`). |
-| `wiki_space_id` | `7123456789012345678` (chuỗi số dài) | **ID của Không gian Wiki (Knowledge Space)**.<br>👉 **Cách lấy**: Truy cập vào không gian Wiki trên Lark $ightarrow$ chọn Cài đặt không gian (Space Settings), URL sẽ hiển thị dạng:<br>`https://<domain>.larksuite.com/wiki/settings/7123456789012345678` hoặc tham số `?space_id=...`. |
-| `app_id` | `cli_a1b2c3d4e5...` (bắt đầu bằng `cli_`) | **App ID của Lark Custom App**.<br>👉 **Cách lấy**: Truy cập [Lark Developer Console](https://open.larksuite.com/app) $ightarrow$ Chọn ứng dụng của bạn $ightarrow$ Mở mục **Credentials & Basic Info** $ightarrow$ Copy giá trị **App ID**. |
-| `app_secret` | Chuỗi ký tự bí mật 32 ký tự | **App Secret của Lark Custom App**.<br>👉 **Cách lấy**: Tại cùng trang **Credentials & Basic Info** trong Developer Console $ightarrow$ Nhấn **Show** hoặc **Copy** tại mục **App Secret**. |
-| `requester_open_id` | `ou_9876543210abcdef...` (bắt đầu bằng `ou_`) | **Lark Open ID của người tạo ticket / người nhận thông báo**.<br>👉 **Cách lấy**: Trong Lark Base, cột hệ thống `Created By` lưu trữ trực tiếp User ID này. Ngoài ra có thể tra cứu tại **Developer Console $ightarrow$ Member Management**. |
+| `wiki_space_id` | `7123456789012345678` (chuỗi số dài) | **ID của Không gian Wiki (Knowledge Space)**.<br>👉 **Cách lấy**: Truy cập vào không gian Wiki trên Lark $
+ightarrow$ chọn Cài đặt không gian (Space Settings), URL sẽ hiển thị dạng:<br>`https://<domain>.larksuite.com/wiki/settings/7123456789012345678` hoặc tham số `?space_id=...`. |
+| `app_id` | `cli_a1b2c3d4e5...` (bắt đầu bằng `cli_`) | **App ID của Lark Custom App**.<br>👉 **Cách lấy**: Truy cập [Lark Developer Console](https://open.larksuite.com/app) $
+ightarrow$ Chọn ứng dụng của bạn $
+ightarrow$ Mở mục **Credentials & Basic Info** $
+ightarrow$ Copy giá trị **App ID**. |
+| `app_secret` | Chuỗi ký tự bí mật 32 ký tự | **App Secret của Lark Custom App**.<br>👉 **Cách lấy**: Tại cùng trang **Credentials & Basic Info** trong Developer Console $
+ightarrow$ Nhấn **Show** hoặc **Copy** tại mục **App Secret**. |
+| `requester_open_id` | `ou_9876543210abcdef...` (bắt đầu bằng `ou_`) | **Lark Open ID của người tạo ticket / người nhận thông báo**.<br>👉 **Cách lấy**: Trong Lark Base, cột hệ thống `Created By` lưu trữ trực tiếp User ID này. Ngoài ra có thể tra cứu tại **Developer Console $
+ightarrow$ Member Management**. |
 | `root_directory` | `C:/Users/.../GitHub` hoặc `/mnt/c/...` | **Đường dẫn thư mục gốc chứa các repository cục bộ** của lập trình viên (dùng cho skill `ticket-to-code` quét mã nguồn). |
 
 ---
@@ -95,6 +101,12 @@ Lark Suite được thiết kế theo kiến trúc **Universal Agent Framework**
 ---
 
 ## ⚙️ Cài Đặt & Thiết Lập
+
+### 0. Cài global cho Kiro (IDE + Crew) — chạy 1 lần sau khi clone
+```bash
+npm run install:global
+```
+Copy `skills/` → `~/.agents/skills/`, `.kiro/steering/` → `~/.kiro/steering/`, merge `drawio` vào `~/.kiro/settings/mcp.json`, đăng ký `skills.extra_paths` cho Crew (bỏ qua nếu máy chưa có Crew). Chạy lại sau mỗi `git pull` để cập nhật. Không ghi đè config sẵn có của bạn. Xong thì Reload Window (IDE) / restart Crew gateway.
 
 ### 1. Cài đặt Dependencies
 ```bash
@@ -153,8 +165,3 @@ Sau khi cài đặt, bạn chỉ cần giao tiếp bằng ngôn ngữ tự nhiê
   > *"Agent, hãy khởi tạo bộ 8 tài liệu kỹ thuật trên thư mục Lark Drive 'Project Phoenix' và đồng bộ nội dung PRD lên đó."*
 - **Vẽ Sơ Đồ Hệ Thống**:
   > *"Agent, hãy vẽ sơ đồ Architecture Flow cho luồng xác thực SSO bằng Draw.io MCP chuẩn thẩm mỹ aesthetic và cập nhật vào System Architecture docs."*
-
----
-
-## 📄 Bản Quyền & Giấy Phép
-Phát hành theo giấy phép [MIT](LICENSE).
